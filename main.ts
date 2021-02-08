@@ -5,7 +5,7 @@ input.onButtonPressed(Button.A, function () {
 })
 let DRINK_WATER_PERIOD = 3600
 let 
-let curTime = input.runningTime()
+let curTime input.runningTime()
 basic.forever(function () {
 	
 })
