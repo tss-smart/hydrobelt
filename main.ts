@@ -40,19 +40,19 @@ let USER_TYPE_ELDERLY = 2
 
 let USER_TYPE_STRS = ["Child", "Adult", "Elderly"]
 
-let DRINK_GOAL_AMOUNTS = [1600, 200, 2000]
+let DRINK_GOAL_AMOUNTS = [1600, 2000, 2000]
 
 let DRINK_EACH_TIMES = [200, 250, 200]
 
-let DRINK_PERIODS = [2700, 3600, 2700]
+// let DRINK_PERIODS = [2700, 3600, 2700] // in seconds
+let DRINK_PERIODS = [10, 3600, 2700] // in seconds
 
-let SHOW_SCREEN_SAVER_PERIOD = 10
+let SCREEN_SAVER_PERIOD = 10 // in seconds
 
 let userType = USER_TYPE_CHILD
-let nextRemindTime 
-let nextScreenSaveTime
+let nextRemindTime = 0
+let nextScreenSaveTime = 0
 let nextShowGoalAchievedTime = 0
-
 
 let tmp 
 let state = 0
@@ -71,16 +71,35 @@ basic.forever(function () {
         basic.showString("HydroBelt!", 100)
         state = STATE_SHOW_USER_TYPE
     } else if (state == STATE_SHOW_USER_TYPE) {
-        amountDrunk = 0        
+        amountDrunk = 0 
+        basic.clearScreen()       
         basic.showString(USER_TYPE_STRS[userType], 100)
         state = STATE_SHOW_AMOUNT_DRINK
     } else if (state == STATE_SHOW_AMOUNT_DRINK) {
         basic.showString(amountDrunk.toString() + "ml", 100)
+        nextScreenSaveTime = input.runningTime() + SCREEN_SAVER_PERIOD*1000
+        nextRemindTime = input.runningTime() + DRINK_PERIODS[userType]*1000
         state = STATE_WAITING
     } else if (state == STATE_WAITING) {
+        if (input.runningTime()>nextRemindTime) 
+        {
+            state=STATE_REMIND_DRINK
+        }
+        else if (input.runningTime()>nextScreenSaveTime)
+        {
+            state=STATE_SHOW_SCREEN_SAVER
+        }
+    } else if (state == STATE_REMIND_DRINK)
+    {
+        music.startMelody(music.builtInMelody(Melodies.Ringtone), MelodyOptions.Once)
+        nextRemindTime += DRINK_PERIODS[userType]*1000
+        state=STATE_WAITING
+    } else if (state == STATE_SHOW_SCREEN_SAVER)
+    {
 
 
     } else if (state == STATE_SHOW_GOAL_ACHIEVED) {
+        basic.clearScreen()
         basic.showString("Goal!"+amountDrunk.toString() + "ml", 100)
         basic.showIcon(IconNames.Happy)
         nextShowGoalAchievedTime = input.runningTime() + 2000 
