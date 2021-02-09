@@ -51,9 +51,9 @@ let SHOW_SCREEN_SAVER_PERIOD = 10
 let userType = USER_TYPE_CHILD
 let nextRemindTime 
 let nextScreenSaveTime
-let nextShowGoalAchieved
+let nextShowGoalAchievedTime = 0
 
-let nowTime = input.runningTime()
+
 let tmp 
 let state = 0
 
@@ -82,12 +82,13 @@ basic.forever(function () {
 
     } else if (state == STATE_SHOW_GOAL_ACHIEVED) {
         basic.showString("Goal!"+amountDrunk.toString() + "ml", 100)
-        basic.showIcon(IconNames.Happy)        
+        basic.showIcon(IconNames.Happy)
+        nextShowGoalAchievedTime = input.runningTime() + 2000 
         state = STATE_SHOW_GOAL_ACHIEVED_WAITING
     } else if (state == STATE_SHOW_GOAL_ACHIEVED_WAITING)
     {
-        basic.pause(2000)
-        state = STATE_SHOW_GOAL_ACHIEVED
+        if (input.runningTime()>=nextShowGoalAchievedTime)
+            state = STATE_SHOW_GOAL_ACHIEVED
     }
 })
 
