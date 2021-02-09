@@ -1,3 +1,6 @@
+
+
+
 input.onButtonPressed(Button.A, function () {
     if (state == STATE_WAITING) {
         amountDrunk += DRINK_EACH_TIMES[userType]
@@ -20,8 +23,9 @@ input.onButtonPressed(Button.B, function () {
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
     if (state == STATE_WAITING) {
         userType += 1
-        if (userType == USER_TYPE_ELDERLY)
+        if (userType > USER_TYPE_ELDERLY)
             userType = USER_TYPE_CHILD
+        amountDrunk = 0 
         state = STATE_SHOW_USER_TYPE
     }
 })
@@ -32,7 +36,7 @@ let USER_TYPE_CHILD = 0
 let USER_TYPE_ADULT = 1
 let USER_TYPE_ELDERLY = 2
 
-let USER_TYPE_STRS = ["Child.", "Adult.", "Elderly."]
+let USER_TYPE_STRS = ["Child", "Adult", "Elderly"]
 
 let DRINK_GOAL_AMOUNTS = [2000, 1500, 2000]
 
@@ -55,16 +59,19 @@ let STATE_SHOW_GOAL_ACHIEVED = 4
 
 basic.forever(function () {
     if (state == STATE_GREET) {
-        basic.showString("HydroBelt!")
+        basic.showString("HydroBelt!", 100)
         state = STATE_SHOW_USER_TYPE
     } else if (state == STATE_SHOW_USER_TYPE) {
-        basic.showString(USER_TYPE_STRS[userType])
+        basic.showString(USER_TYPE_STRS[userType], 100)
         state = STATE_SHOW_AMOUNT_DRINK
     } else if (state == STATE_SHOW_AMOUNT_DRINK) {
-        basic.showString(amountDrunk.toString() + "ml")
+        basic.showString(amountDrunk.toString() + "ml", 100)
         state = STATE_WAITING
+    } else if (state == STATE_WAITING) {
+
+
     } else if (state == STATE_SHOW_GOAL_ACHIEVED) {
-        basic.showString("Goal!"+amountDrunk.toString() + "ml")
+        basic.showString("Goal!"+amountDrunk.toString() + "ml", 100)
     }
 })
 
